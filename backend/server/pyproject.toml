@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "backend"
+version = "0.13.0"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3==1.42.31",
+    "coreapi==2.3.3",
+    "django==5.2.17",
+    "django-allauth==65.19.1",
+    "django-allauth-ui==1.8.1",
+    "django-cors-headers==4.9.0",
+    "django-geojson==4.2.0",
+    "django-ical==1.9.2",
+    "django-invitations==2.1.0",
+    "django-money==3.6.1",
+    "django-resized==1.0.3",
+    "django-widget-tweaks==1.5.1",
+    "django-storages==1.14.6",
+    "djangorestframework==3.17.1",
+    "drf-yasg==1.21.15",
+    "geojson==3.3.0",
+    "geopy==2.5.0",
+    "gpxpy==1.6.2",
+    "gunicorn==26.0.0",
+    "icalendar==7.2.2",
+    "ijson==3.5.1",
+    "legacy-cgi==2.6.4",
+    "overpy==0.7",
+    "pillow==12.3.0",
+    "pillow-heif==1.4.0",
+    "psutil==7.2.2",
+    "psycopg2-binary==2.9.12",
+    "publicsuffix2==2.20191221",
+    "pymemcache==4.0.0",
+    "python-dotenv==1.2.2",
+    "qrcode==8.2",
+    "reportlab==4.4.10",
+    "requests==2.34.2",
+    "setuptools==83.0.0",
+    "stripe==15.5.1",
+    "slippers==0.6.3",
+    "tqdm==4.68.4",
+    "whitenoise==6.12.0",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "achievements",
+    "adventures",
+    "billing",
+    "cloud",
+    "integrations",
+    "main",
+    "static",
+    "templates",
+    "users",
+    "worldtravel",
+    "manage.py",
+]
