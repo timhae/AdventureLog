@@ -116,7 +116,7 @@ MIDDLEWARE = (
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': getenv('CACHE_LOCATION', '127.0.0.1:11211'),
         'TIMEOUT': 60 * 60 * 24,  # Optional: 1 day cache
     }
 }
@@ -209,11 +209,11 @@ else:
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = getenv('STATIC_ROOT', BASE_DIR / "staticfiles")
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'  # Must match NGINX root for media serving
+MEDIA_ROOT = getenv('MEDIA_ROOT', BASE_DIR / 'media')  # Must match NGINX root for media serving
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_STORAGE_LIMIT_BYTES = int(getenv('MEDIA_STORAGE_LIMIT_BYTES', '0') or 0)
