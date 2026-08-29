@@ -17,6 +17,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            return;
             const pr = context.payload.pull_request;
             const repoFullName = `${context.repo.owner}/${context.repo.repo}`;
 
