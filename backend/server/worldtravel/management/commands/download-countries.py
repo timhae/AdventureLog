@@ -140,6 +140,7 @@ class Command(BaseCommand):
         country_count = 0
         region_count = 0
         city_count = 0
+        skipped_state_count = 0
         
         with default_storage.open(json_path, 'rb') as f:
             parser = ijson.items(f, 'item')
@@ -166,7 +167,15 @@ class Command(BaseCommand):
                 # Process regions/states
                 if country['states']:
                     for state in country['states']:
-                        state_id = f"{country_code}-{state['iso2']}"
+                        # The v3.1 dataset no longer provides state_code for
+                        # many states. Its numeric ID is stable and suitable
+                        # for the region primary key in that case.
+                        state_code = state.get('state_code') or state.get('id')
+                        if state_code is None:
+                            skipped_state_count += 1
+                            continue
+
+                        state_id = f"{country_code}-{state_code}"
                         state_name = state['name']
                         state_lat = round(float(state['latitude']), 6) if state['latitude'] else None
                         state_lng = round(float(state['longitude']), 6) if state['longitude'] else None
@@ -207,7 +216,11 @@ class Command(BaseCommand):
                     self.stdout.write(f'  Parsed {country_count} countries, {region_count} regions, {city_count} cities...')
 
         temp_conn.commit()
-        self.stdout.write(f'✓ Parsing complete: {country_count} countries, {region_count} regions, {city_count} cities')
+        skipped_message = f', {skipped_state_count} states skipped' if skipped_state_count else ''
+        self.stdout.write(
+            f'✓ Parsing complete: {country_count} countries, {region_count} regions, '
+            f'{city_count} cities{skipped_message}'
+        )
 
     def _process_countries_from_temp(self, temp_conn, batch_size):
         """Process countries from temporary database"""
