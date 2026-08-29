@@ -1,7 +1,7 @@
 import logging
 
 import stripe
-from stripe.error import InvalidRequestError
+from stripe import InvalidRequestError
 from django.conf import settings
 from django.db import transaction
 

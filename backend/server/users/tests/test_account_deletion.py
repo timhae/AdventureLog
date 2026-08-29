@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from allauth.account.models import EmailAddress
-from stripe.error import InvalidRequestError
+from stripe import InvalidRequestError
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 from rest_framework.test import APITestCase

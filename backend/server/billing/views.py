@@ -40,7 +40,7 @@ def _find_existing_customer_id(billing_email, user_id):
     if billing_email:
         try:
             existing = stripe.Customer.list(email=billing_email, limit=1)
-        except stripe.error.StripeError:
+        except stripe.StripeError:
             existing = None
 
         if existing:
@@ -52,7 +52,7 @@ def _find_existing_customer_id(billing_email, user_id):
         try:
             query = f"metadata['user_id']:'{user_id}'"
             results = stripe.Customer.search(query=query, limit=1)
-        except stripe.error.StripeError:
+        except stripe.StripeError:
             results = None
 
         if results:
@@ -118,7 +118,7 @@ def _handle_stripe_webhook_event(event_type: str, data: dict) -> None:
             if subscription_id:
                 try:
                     stripe_subscription = stripe.Subscription.retrieve(subscription_id)
-                except stripe.error.StripeError:
+                except stripe.StripeError:
                     stripe_subscription = None
 
                 if stripe_subscription:
@@ -207,7 +207,7 @@ class CreateCheckoutSessionView(APIView):
         if customer_id and billing_email:
             try:
                 stripe.Customer.modify(customer_id, email=billing_email)
-            except stripe.error.StripeError:
+            except stripe.StripeError:
                 pass
 
         subscription_data = {
@@ -233,7 +233,7 @@ class CreateCheckoutSessionView(APIView):
 
         try:
             session = stripe.checkout.Session.create(**checkout_params)
-        except stripe.error.StripeError as exc:
+        except stripe.StripeError as exc:
             logger.exception('Failed to create Stripe checkout session: %s', exc)
             return Response(
                 {"detail": "Unable to create checkout session at this time."},
@@ -273,7 +273,7 @@ class CreatePortalSessionView(APIView):
                 customer=subscription.stripe_customer_id,
                 return_url=f"{settings.FRONTEND_URL}/subscribe",
             )
-        except stripe.error.StripeError as exc:
+        except stripe.StripeError as exc:
             logger.exception('Failed to create Stripe billing portal session: %s', exc)
             return Response(
                 {"detail": "Unable to create billing portal session at this time."},
@@ -302,7 +302,7 @@ class StripeWebhookView(APIView):
             )
         except ValueError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        except stripe.error.SignatureVerificationError:
+        except stripe.SignatureVerificationError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         event_id = event.get("id")
